@@ -22,7 +22,7 @@ export default function ProductList() {
   }, [dispatch]);
 
   return (
-    <div className="mt-6">
+    <div className="max-w-screen-xl mx-auto mt-6">
       <h1 className="text-xl font-bold text-primary">For You</h1>
       {products.length === 0 ? (
         <p>Loading products...</p>

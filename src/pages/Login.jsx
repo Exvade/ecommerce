@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -11,16 +12,26 @@ export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    // Simulasi autentikasi
-    if (email === "user@example.com" && password === "password123") {
-      const userData = { email, name: "John Doe" }; // Data pengguna setelah login berhasil
-      dispatch(login(userData));
-      navigate("/"); // Redirect ke halaman utama atau sebelumnya
-    } else {
-      setError("Invalid email or password");
+    try {
+      const response = await axios.get("https://fakestoreapi.com/users");
+      const users = response.data;
+
+      const user = users.find(
+        (user) => user.email === email && user.password === password
+      );
+
+      if (user) {
+        dispatch(login({ email: user.email, name: user.username }));
+        navigate("/");
+      } else {
+        setError("Invalid email or password");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("An error occurred while logging in. Please try again later.");
     }
   };
 

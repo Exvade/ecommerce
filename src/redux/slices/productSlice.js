@@ -1,22 +1,47 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+// Ambil data dari localStorage jika tersedia
+const localStorageProducts = JSON.parse(localStorage.getItem("products")) || [];
+
 const initialState = {
-  products: [],
+  products: localStorageProducts,
 };
 
 const productSlice = createSlice({
   name: "product",
   initialState,
   reducers: {
+    // Mengisi produk saat data diambil dari API
     setProducts: (state, action) => {
-      state.products = action.payload.map((product) => ({
+      const updatedProducts = action.payload.map((product) => ({
         ...product,
-        quantity: 20,
+        stock:
+          state.products.find((p) => p.id === product.id)?.stock ||
+          product.stock ||
+          20, // Ambil stok dari localStorage jika ada
       }));
+      state.products = updatedProducts;
+
+      // Simpan ke localStorage
+      localStorage.setItem("products", JSON.stringify(updatedProducts));
+    },
+
+    // Mengupdate stok produk
+    updateStock: (state, action) => {
+      const { id, quantity } = action.payload;
+      const product = state.products.find((product) => product.id === id);
+
+      if (product) {
+        product.stock -= quantity; // Kurangi stok
+        if (product.stock < 0) product.stock = 0; // Hindari stok negatif
+
+        // Simpan perubahan ke localStorage
+        localStorage.setItem("products", JSON.stringify(state.products));
+      }
     },
   },
 });
 
-export const { setProducts } = productSlice.actions;
+export const { setProducts, updateStock } = productSlice.actions;
 
 export default productSlice.reducer;

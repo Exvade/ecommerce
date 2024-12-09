@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { removeFromCart, updateCartQuantity } from "../redux/slices/cartSlice";
-import { updateStock } from "../redux/slices/stockSlice";
+import { updateStock } from "../redux/slices/productSlice"; // Ubah dari stockSlice ke productSlice
 
 export default function Cart() {
   const dispatch = useDispatch();
@@ -23,8 +23,9 @@ export default function Cart() {
   // Fungsi untuk checkout
   const handleCheckout = () => {
     cartItems.forEach((item) => {
-      dispatch(updateStock({ id: item.id, quantity: item.quantity }));
+      dispatch(updateStock({ id: item.id, quantity: item.quantity })); // Pastikan menggunakan reducer yang benar
     });
+
     alert("Checkout berhasil! Stok produk telah diperbarui.");
   };
 

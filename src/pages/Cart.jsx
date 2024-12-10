@@ -1,32 +1,30 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { removeFromCart, updateCartQuantity } from "../redux/slices/cartSlice";
-import { updateStock } from "../redux/slices/productSlice"; // Ubah dari stockSlice ke productSlice
+import { clearCart, removeFromCart, updateCartQuantity } from "../redux/slices/cartSlice";
+import { updateStock } from "../redux/slices/productSlice";
 
 export default function Cart() {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
 
-  // Fungsi untuk menghitung total harga semua barang
   const totalPrice = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
 
-  // Fungsi untuk mengubah kuantitas barang
   const handleQuantityChange = (id, quantity) => {
-    if (quantity < 1) return; // Minimum quantity adalah 1
+    if (quantity < 1) return;
     dispatch(updateCartQuantity({ id, quantity }));
   };
 
-  // Fungsi untuk checkout
   const handleCheckout = () => {
     cartItems.forEach((item) => {
-      dispatch(updateStock({ id: item.id, quantity: item.quantity })); // Pastikan menggunakan reducer yang benar
+      dispatch(updateStock({ id: item.id, quantity: item.quantity }));
     });
 
-    alert("Checkout berhasil! Stok produk telah diperbarui.");
+    dispatch(clearCart()); // Hapus semua item dari keranjang
+    alert("Checkout berhasil! Stok produk telah diperbarui dan keranjang kosong.");
   };
 
   return (

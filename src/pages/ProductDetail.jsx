@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import IconBack from "../components/icon/IconBack";
+import IconShare from "../components/icon/IconShare";
 import { addToCart } from "../redux/slices/cartSlice";
 
 export default function ProductDetail() {
@@ -70,26 +72,15 @@ export default function ProductDetail() {
 
   return (
     <>
-      <div className="flex items-center justify-between w-full max-w-screen-xl px-4 md:mx-auto h-14">
+      <div className="flex items-center justify-between w-full h-20 max-w-screen-xl px-4 md:mx-auto">
         <Link to="/">
-          <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24">
-            <g fill="none" stroke="#515151" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}>
-              <path strokeDasharray={20} strokeDashoffset={20} d="M21 12h-17.5">
-                <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.2s" values="20;0"></animate>
-              </path>
-              <path strokeDasharray={12} strokeDashoffset={12} d="M3 12l7 7M3 12l7 -7">
-                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.2s" dur="0.2s" values="12;0"></animate>
-              </path>
-            </g>
-          </svg>
+          <IconBack />
         </Link>
         <p className="line-clamp-1 w-[50%] text-center font-semibold">{product.title}</p>
-        <svg className="unf-icon" viewBox="0 0 24 24" width="24" height="24" fill="#515151">
-          <path d="M3.092 19.78a1 1 0 0 0 .78-.57c2.36-3.81 6.57-4.82 9.95-5v2.45a1.33 1.33 0 0 0 .8 1.22 1.25 1.25 0 0 0 1.37-.28l5.1-5a2.25 2.25 0 0 0 0-3.18l-5.05-5a1.25 1.25 0 0 0-1.38-.28 1.29 1.29 0 0 0-.79 1.2v2.43c-6.78.32-11.53 4.94-11.53 11.23a.8.8 0 0 0 .55.75l.2.03Zm11.5-7.03c-3.24 0-7.44.69-10.42 3.7 1.14-4.29 5.18-7.2 10.42-7.2a.76.76 0 0 0 .75-.75V5.82l4.66 4.66a.75.75 0 0 1 0 1.06l-4.66 4.66v-2.7a.76.76 0 0 0-.75-.75Z"></path>
-        </svg>
+        <IconShare />
       </div>
 
-      <div className="md:flex md:max-w-screen-lg md:mx-auto md:justify-center md:items-center">
+      <div className="md:flex md:max-w-screen-lg md:mx-auto md:justify-center md:items-center md:mt-10">
         <div className="w-full aspect-square md:w-[50%]">
           <img src={product.image} alt="" className="object-contain w-full aspect-square" />
         </div>
@@ -123,12 +114,9 @@ export default function ProductDetail() {
             <p className="mb-4 text-sm">{product.description}</p>
           </div>
           <div className="md:static fixed flex justify-center items-center bottom-0 py-[10px] bg-white w-full md:w-[20%]md:flex md:flex-col md:w-auto">
-            <div className="hidden md:block">
-              <p>Select Quantity and Notes</p>
-            </div>
             <button
               onClick={handleAddToCart}
-              className="w-[90%] bg-primary h-[40px] rounded-md text-white font-bold"
+              className="w-[90%] md:w-full bg-primary h-[40px] rounded-md text-white font-bold"
               disabled={reduxProduct && reduxProduct.stock <= 0}
             >
               {reduxProduct && reduxProduct.stock > 0 ? "Add to Cart" : "Out of Stock"}

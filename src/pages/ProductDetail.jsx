@@ -84,10 +84,13 @@ export default function ProductDetail() {
           </svg>
         </Link>
         <p className="line-clamp-1 w-[50%] text-center font-semibold">{product.title}</p>
+        <svg className="unf-icon" viewBox="0 0 24 24" width="24" height="24" fill="#515151">
+          <path d="M3.092 19.78a1 1 0 0 0 .78-.57c2.36-3.81 6.57-4.82 9.95-5v2.45a1.33 1.33 0 0 0 .8 1.22 1.25 1.25 0 0 0 1.37-.28l5.1-5a2.25 2.25 0 0 0 0-3.18l-5.05-5a1.25 1.25 0 0 0-1.38-.28 1.29 1.29 0 0 0-.79 1.2v2.43c-6.78.32-11.53 4.94-11.53 11.23a.8.8 0 0 0 .55.75l.2.03Zm11.5-7.03c-3.24 0-7.44.69-10.42 3.7 1.14-4.29 5.18-7.2 10.42-7.2a.76.76 0 0 0 .75-.75V5.82l4.66 4.66a.75.75 0 0 1 0 1.06l-4.66 4.66v-2.7a.76.76 0 0 0-.75-.75Z"></path>
+        </svg>
       </div>
 
       <div className="md:flex md:max-w-screen-lg md:mx-auto md:justify-center md:items-center">
-        <div className="w-full aspect-square md:w-[30%]">
+        <div className="w-full aspect-square md:w-[50%]">
           <img src={product.image} alt="" className="object-contain w-full aspect-square" />
         </div>
 
@@ -119,20 +122,21 @@ export default function ProductDetail() {
             <p className="my-4 text-base font-bold">Product Description</p>
             <p className="mb-4 text-sm">{product.description}</p>
           </div>
+          <div className="md:static fixed flex justify-center items-center bottom-0 py-[10px] bg-white w-full md:w-[20%]md:flex md:flex-col md:w-auto">
+            <div className="hidden md:block">
+              <p>Select Quantity and Notes</p>
+            </div>
+            <button
+              onClick={handleAddToCart}
+              className="w-[90%] bg-primary h-[40px] rounded-md text-white font-bold"
+              disabled={reduxProduct && reduxProduct.stock <= 0}
+            >
+              {reduxProduct && reduxProduct.stock > 0 ? "Add to Cart" : "Out of Stock"}
+            </button>
+          </div>
         </div>
 
-        <div className="md:static fixed flex justify-center items-center bottom-0 py-[10px] bg-white w-full shadow-[0px_-1px_12px_10px_#00000024] md:w-[20%]md:flex md:flex-col md:w-auto">
-          <div className="hidden md:block">
-            <p>Select Quantity and Notes</p>
-          </div>
-          <button
-            onClick={handleAddToCart}
-            className="w-[90%] bg-primary h-[40px] rounded-md text-white font-bold"
-            disabled={reduxProduct && reduxProduct.stock <= 0}
-          >
-            {reduxProduct && reduxProduct.stock > 0 ? "Add to Cart" : "Out of Stock"}
-          </button>
-        </div>
+
       </div>
     </>
   );

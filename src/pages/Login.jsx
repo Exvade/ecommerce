@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "../redux/slices/authSlice";
@@ -8,12 +8,15 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [autoFill, setAutoFill] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
       const response = await axios.get("https://fakestoreapi.com/users");
@@ -32,8 +35,34 @@ export default function Login() {
     } catch (err) {
       console.error(err);
       setError("An error occurred while logging in. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (autoFill) {
+      const fetchUserData = async () => {
+        try {
+          const response = await axios.get("https://fakestoreapi.com/users");
+          const users = response.data;
+
+          if (users.length > 0) {
+            const user = users[0];
+            setEmail(user.email);
+            setPassword(user.password);
+          }
+        } catch (error) {
+          console.error("Error fetching user data for autofill:", error);
+        }
+      };
+
+      fetchUserData();
+    } else {
+      setEmail("");
+      setPassword("");
+    }
+  }, [autoFill]);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
@@ -67,11 +96,25 @@ export default function Login() {
               required
             />
           </div>
+          <div className="flex items-center gap-2 mb-4">
+            <input
+              type="checkbox"
+              id="autoFill"
+              checked={autoFill}
+              onChange={(e) => setAutoFill(e.target.checked)}
+              className="checked:bg-primary checked:outline-none focus:ring-0"
+            />
+            <label htmlFor="autoFill" className="text-sm font-medium">
+              Auto fill form
+            </label>
+          </div>
           <button
             type="submit"
-            className="w-full px-4 py-2 font-bold text-white rounded-md bg-primary focus:outline-none hover:bg-primary-dark"
+            disabled={isLoading}
+            className={`w-full px-4 py-2 font-bold text-white rounded-md bg-primary hover:bg-primary-dark focus:outline-none ${isLoading ? "opacity-75 cursor-not-allowed" : ""
+              }`}
           >
-            Login
+            {isLoading ? "Loading..." : "Sign In"}
           </button>
         </form>
       </div>

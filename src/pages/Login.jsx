@@ -102,7 +102,7 @@ export default function Login() {
               id="autoFill"
               checked={autoFill}
               onChange={(e) => setAutoFill(e.target.checked)}
-              className="checked:bg-primary checked:outline-none focus:ring-0"
+              className="rounded-sm checked:bg-primary checked:outline-none focus:ring-0"
             />
             <label htmlFor="autoFill" className="text-sm font-medium">
               Auto fill form

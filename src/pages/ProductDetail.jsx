@@ -12,12 +12,12 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [randomSold, setRandomSold] = useState(0);
+  const [quantity, setQuantity] = useState(1);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
-  // Ambil data produk dari Redux
   const reduxProduct = useSelector((state) =>
     state.product.products.find((p) => p.id === parseInt(id))
   );
@@ -34,7 +34,6 @@ export default function ProductDetail() {
       }
     };
 
-    // Hanya fetch jika produk tidak ada di Redux
     if (!reduxProduct) {
       fetchProductDetail();
     } else {
@@ -42,7 +41,6 @@ export default function ProductDetail() {
       setLoading(false);
     }
 
-    // Generate angka acak untuk jumlah produk yang terjual (10-99)
     setRandomSold(Math.floor(Math.random() * (99 - 10 + 1)) + 10);
   }, [id, reduxProduct]);
 
@@ -59,14 +57,24 @@ export default function ProductDetail() {
       navigate("/login");
     } else {
       if (reduxProduct && reduxProduct.stock > 0) {
-        // Tambahkan produk ke keranjang
-        dispatch(addToCart(product));
-
-        // Tampilkan pesan sukses
+        dispatch(addToCart({ ...product, quantity }));
         alert("Product added to cart!");
       } else {
         alert("Sorry, this product is out of stock!");
       }
+    }
+  };
+
+
+  const incrementQuantity = () => {
+    if (reduxProduct && quantity < reduxProduct.stock) {
+      setQuantity((prev) => prev + 1);
+    }
+  };
+
+  const decrementQuantity = () => {
+    if (quantity > 1) {
+      setQuantity((prev) => prev - 1);
     }
   };
 
@@ -100,20 +108,24 @@ export default function ProductDetail() {
           </div>
           <div className="px-4 mt-4 border-y-8 md:border-none">
             <p className="my-4 text-base font-bold">Product Detail</p>
-            <div className="flex justify-between border-y py-[6px]">
-              <p className="w-[50%] text-sm">Category</p>
-              <p className="w-[50%] text-xs capitalize font-bold text-primary flex items-center">{product.category}</p>
-            </div>
-            <div className="flex justify-between border-b py-[6px]">
-              <p className="w-[50%] text-sm">Stock</p>
-              <p className="w-[50%] text-xs capitalize font-bold text-primary flex items-center">
-                {reduxProduct ? reduxProduct.stock : "Loading..."}
-              </p>
-            </div>
-            <p className="my-4 text-base font-bold">Product Description</p>
             <p className="mb-4 text-sm">{product.description}</p>
           </div>
-          <div className="md:static fixed flex justify-center items-center bottom-0 py-[10px] bg-white w-full md:w-[20%]md:flex md:flex-col md:w-auto">
+          <div className="md:static fixed flex justify-center items-center bottom-0 py-[10px] bg-white w-full md:flex-col md:w-auto">
+            <div className="justify-around hidden w-full py-4 md:flex md:items-center">
+              <button
+                onClick={decrementQuantity}
+                className="block font-semibold text-white rounded-sm w-7 aspect-square bg-primary"
+              >
+                -
+              </button>
+              <p className="text-xl font-semibold">{quantity}</p>
+              <button
+                onClick={incrementQuantity}
+                className="block px-2 font-semibold text-white rounded-sm w-7 aspect-square bg-primary"
+              >
+                +
+              </button>
+            </div>
             <button
               onClick={handleAddToCart}
               className="w-[90%] md:w-full bg-primary h-[40px] rounded-md text-white font-bold"
@@ -123,8 +135,6 @@ export default function ProductDetail() {
             </button>
           </div>
         </div>
-
-
       </div>
     </>
   );

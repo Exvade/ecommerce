@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import IconMinus from "../components/icon/IconMinus";
@@ -11,10 +11,7 @@ export default function Cart() {
   const cartItems = useSelector((state) => state.cart.items);
   const products = useSelector((state) => state.product.products);
 
-  const totalPrice = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
+  const [selectedItems, setSelectedItems] = useState([]);
 
   const handleQuantityChange = (id, quantity) => {
     if (quantity < 1) return;
@@ -27,13 +24,38 @@ export default function Cart() {
   };
 
   const handleCheckout = () => {
-    cartItems.forEach((item) => {
-      dispatch(updateStock({ id: item.id, quantity: item.quantity }));
+    selectedItems.forEach((id) => {
+      const item = cartItems.find((item) => item.id === id);
+      if (item) {
+        dispatch(updateStock({ id: item.id, quantity: item.quantity }));
+      }
     });
 
     dispatch(clearCart());
     alert("Checkout berhasil! Stok produk telah diperbarui dan keranjang kosong.");
   };
+
+  const handleCheckboxChange = (id) => {
+    setSelectedItems((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((itemId) => itemId !== id)
+        : [...prevSelected, id]
+    );
+  };
+
+  const handleSelectAll = (isChecked) => {
+    if (isChecked) {
+      setSelectedItems(cartItems.map((item) => item.id));
+    } else {
+      setSelectedItems([]);
+    }
+  };
+
+  const totalPrice = cartItems.reduce(
+    (total, item) =>
+      selectedItems.includes(item.id) ? total + item.price * item.quantity : total,
+    0
+  );
 
   return (
     <div className="max-w-screen-lg mx-auto">
@@ -52,10 +74,13 @@ export default function Cart() {
 
             return (
               <div key={item.id} className="pb-[8px] bg-gray-200">
-                <div
-                  className="flex items-center justify-between gap-2 p-4 px-3 bg-white"
-                >
-                  <input type="checkbox" className="self-start border-2 border-gray-400 rounded-sm" />
+                <div className="flex items-center justify-between gap-2 p-4 px-3 bg-white">
+                  <input
+                    type="checkbox"
+                    className="self-start border-2 border-gray-400 rounded-sm"
+                    checked={selectedItems.includes(item.id)}
+                    onChange={() => handleCheckboxChange(item.id)}
+                  />
                   <div>
                     <img
                       src={item.image}
@@ -81,7 +106,7 @@ export default function Cart() {
                         type="text"
                         value={item.quantity}
                         min="1"
-                        className="w-[40px] h-4 text-sm font-medium text-center border-none rounded"
+                        className="w-[40px] h-4 text-sm font-medium text-center border-none rounded focus:ring-0"
                         onChange={(e) => {
                           const newQuantity = parseInt(e.target.value, 10);
                           if (newQuantity >= 1) {
@@ -110,8 +135,16 @@ export default function Cart() {
           })}
           <div className="fixed bottom-0 flex justify-between w-full px-4 py-3 mt-6 text-right border-t">
             <div className="flex items-center gap-2">
-              <input type="checkbox" id="all" className="w-[18px] h-[18px] border-2 border-gray-400 rounded-sm" />
-              <label htmlFor="all" className="text-xs">All</label>
+              <input
+                type="checkbox"
+                id="all"
+                className="w-[18px] h-[18px] border-2 border-gray-400 rounded-sm"
+                checked={selectedItems.length === cartItems.length}
+                onChange={(e) => handleSelectAll(e.target.checked)}
+              />
+              <label htmlFor="all" className="text-xs">
+                All
+              </label>
             </div>
             <div className="flex gap-2">
               <div className="flex flex-col items-end justify-end">
@@ -125,7 +158,6 @@ export default function Cart() {
                 Checkout
               </button>
             </div>
-
           </div>
         </div>
       )}

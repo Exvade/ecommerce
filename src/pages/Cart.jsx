@@ -1,9 +1,10 @@
+import "animate.css";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import IconMinus from "../components/icon/IconMinus";
 import IconPlus from "../components/icon/IconPlus";
-import { clearCart, updateCartQuantity } from "../redux/slices/cartSlice";
+import { removeSelectedItems, updateCartQuantity } from "../redux/slices/cartSlice";
 import { updateStock } from "../redux/slices/productSlice";
 
 export default function Cart() {
@@ -12,6 +13,7 @@ export default function Cart() {
   const products = useSelector((state) => state.product.products);
 
   const [selectedItems, setSelectedItems] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleQuantityChange = (id, quantity) => {
     if (quantity < 1) return;
@@ -24,6 +26,12 @@ export default function Cart() {
   };
 
   const handleCheckout = () => {
+    if (selectedItems.length === 0) {
+      setShowPopup(true);
+      setTimeout(() => setShowPopup(false), 2000);
+      return;
+    }
+
     selectedItems.forEach((id) => {
       const item = cartItems.find((item) => item.id === id);
       if (item) {
@@ -31,8 +39,10 @@ export default function Cart() {
       }
     });
 
-    dispatch(clearCart());
-    alert("Checkout berhasil! Stok produk telah diperbarui dan keranjang kosong.");
+    // Hapus barang yang dipilih dari keranjang
+    dispatch(removeSelectedItems(selectedItems));
+    alert("Checkout berhasil! Stok produk telah diperbarui.");
+    setSelectedItems([]); // Reset pilihan setelah checkout
   };
 
   const handleCheckboxChange = (id) => {
@@ -58,7 +68,7 @@ export default function Cart() {
   );
 
   return (
-    <div className="max-w-screen-lg mx-auto">
+    <div className="relative max-w-screen-lg mx-auto">
       <h1 className="mt-20 mb-6 text-2xl font-bold">Your Cart</h1>
       {cartItems.length === 0 ? (
         <div className="text-center">
@@ -74,10 +84,10 @@ export default function Cart() {
 
             return (
               <div key={item.id} className="pb-[8px] bg-gray-200">
-                <div className="flex items-center justify-between gap-2 p-4 px-3 bg-white">
+                <div className="flex items-center justify-between gap-3 p-4 px-3 bg-white">
                   <input
                     type="checkbox"
-                    className="self-start border-2 border-gray-400 rounded-sm"
+                    className="self-start border-2 border-gray-400 rounded-sm focus:ring-0 checked:bg-primary"
                     checked={selectedItems.includes(item.id)}
                     onChange={() => handleCheckboxChange(item.id)}
                   />
@@ -89,7 +99,7 @@ export default function Cart() {
                     />
                   </div>
                   <div className="flex flex-col w-full">
-                    <div className="flex-1 w-full ml-4 md:justify-between">
+                    <div className="flex flex-col justify-center w-full md:justify-between">
                       <p className="text-xs font-medium line-clamp-1">{item.title}</p>
                       <p className="text-xs font-bold">${item.price.toFixed(2)}</p>
                     </div>
@@ -138,7 +148,7 @@ export default function Cart() {
               <input
                 type="checkbox"
                 id="all"
-                className="w-[18px] h-[18px] border-2 border-gray-400 rounded-sm"
+                className="w-[18px] h-[18px] border-2 border-gray-400 rounded-sm focus:ring-0 checked:bg-primary"
                 checked={selectedItems.length === cartItems.length}
                 onChange={(e) => handleSelectAll(e.target.checked)}
               />
@@ -159,6 +169,11 @@ export default function Cart() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {showPopup && (
+        <div className="fixed left-0 right-0 flex items-center justify-center p-4 text-sm font-bold text-white bg-red-500 bottom-16 animate__animated animate__bounceInUp">
+          Please select items before checking out!
         </div>
       )}
     </div>

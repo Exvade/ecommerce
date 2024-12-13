@@ -9,7 +9,6 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      console.log("Action payload in addToCart:", action.payload);
       const existingItem = state.items.find(
         (item) => item.id === action.payload.id
       );
@@ -22,7 +21,6 @@ const cartSlice = createSlice({
         });
       }
     },
-
     updateCartQuantity: (state, action) => {
       const { id, quantity } = action.payload;
       const existingItem = state.items.find((item) => item.id === id);
@@ -36,10 +34,21 @@ const cartSlice = createSlice({
     clearCart: (state) => {
       state.items = [];
     },
+    removeSelectedItems: (state, action) => {
+      const selectedIds = action.payload; // Array of IDs to remove
+      state.items = state.items.filter(
+        (item) => !selectedIds.includes(item.id)
+      );
+    },
   },
 });
 
-export const { addToCart, updateCartQuantity, removeFromCart, clearCart } =
-  cartSlice.actions;
+export const {
+  addToCart,
+  updateCartQuantity,
+  removeFromCart,
+  clearCart,
+  removeSelectedItems,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

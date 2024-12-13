@@ -1,8 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Logo from "../assets/logo.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const location = useLocation();
+
+  const hideFooter = location.pathname.includes("/cart");
+
+  if (hideFooter) return null;
 
   return (
     <footer className="m-4 bg-white rounded-lg dark:bg-gray-900">

@@ -1,12 +1,15 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { clearCart, removeFromCart, updateCartQuantity } from "../redux/slices/cartSlice";
+import IconMinus from "../components/icon/IconMinus";
+import IconPlus from "../components/icon/IconPlus";
+import { clearCart, updateCartQuantity } from "../redux/slices/cartSlice";
 import { updateStock } from "../redux/slices/productSlice";
 
 export default function Cart() {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
+  const products = useSelector((state) => state.product.products);
 
   const totalPrice = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
@@ -18,14 +21,9 @@ export default function Cart() {
     dispatch(updateCartQuantity({ id, quantity }));
   };
 
-  const incrementQuantity = (id, currentQuantity) => {
-    handleQuantityChange(id, currentQuantity + 1);
-  };
-
-  const decrementQuantity = (id, currentQuantity) => {
-    if (currentQuantity > 1) {
-      handleQuantityChange(id, currentQuantity - 1);
-    }
+  const getStockById = (id) => {
+    const product = products.find((product) => product.id === id);
+    return product?.stock || 0;
   };
 
   const handleCheckout = () => {
@@ -38,8 +36,8 @@ export default function Cart() {
   };
 
   return (
-    <div className="max-w-screen-lg p-6 mx-auto">
-      <h1 className="mt-12 mb-6 text-2xl font-bold">Your Cart</h1>
+    <div className="max-w-screen-lg mx-auto">
+      <h1 className="mt-20 mb-6 text-2xl font-bold">Your Cart</h1>
       {cartItems.length === 0 ? (
         <div className="text-center">
           <p className="mb-4">Your cart is empty.</p>
@@ -49,54 +47,85 @@ export default function Cart() {
         </div>
       ) : (
         <div>
-          {cartItems.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center justify-between p-4 mb-4 border rounded-lg shadow-sm"
-            >
-              <img
-                src={item.image}
-                alt={item.name}
-                className="object-cover w-20 h-20"
-              />
-              <div className="flex-1 ml-4">
-                <p className="font-semibold">{item.name}</p>
-                <p className="text-gray-600">${item.price.toFixed(2)}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => decrementQuantity(item.id, item.quantity)}
-                  className="px-3 py-1 text-white bg-blue-500 rounded hover:bg-blue-600"
+          {cartItems.map((item) => {
+            const stock = getStockById(item.id);
+
+            return (
+              <div key={item.id} className="pb-[8px] bg-gray-200">
+                <div
+                  className="flex items-center justify-between gap-2 p-4 px-3 bg-white"
                 >
-                  -
-                </button>
-                <span>{item.quantity}</span>
-                <button
-                  onClick={() => incrementQuantity(item.id, item.quantity)}
-                  className="px-3 py-1 text-white bg-blue-500 rounded hover:bg-blue-600"
-                >
-                  +
-                </button>
+                  <input type="checkbox" className="self-start border-2 border-gray-400 rounded-sm" />
+                  <div>
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="object-contain w-[78px]"
+                    />
+                  </div>
+                  <div className="flex flex-col w-full">
+                    <div className="flex-1 w-full ml-4 md:justify-between">
+                      <p className="text-xs font-medium line-clamp-1">{item.title}</p>
+                      <p className="text-xs font-bold">${item.price.toFixed(2)}</p>
+                    </div>
+                    <div className="flex items-center self-end border border-gray-200 rounded-lg p-[5px] h-8">
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(item.id, Math.max(item.quantity - 1, 1))
+                        }
+                        className="w-4 text-base rounded text-primary hover:bg-blue-600 aspect-square"
+                      >
+                        <IconMinus />
+                      </button>
+                      <input
+                        type="text"
+                        value={item.quantity}
+                        min="1"
+                        className="w-[40px] h-4 text-sm font-medium text-center border-none rounded"
+                        onChange={(e) => {
+                          const newQuantity = parseInt(e.target.value, 10);
+                          if (newQuantity >= 1) {
+                            handleQuantityChange(item.id, newQuantity);
+                          }
+                        }}
+                        onBlur={() => {
+                          if (item.quantity > stock) {
+                            handleQuantityChange(item.id, stock);
+                          }
+                        }}
+                      />
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(item.id, Math.min(item.quantity + 1, stock))
+                        }
+                        className="w-4 text-base rounded aspect-square text-primary hover:bg-blue-600"
+                      >
+                        <IconPlus />
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="ml-4">
-                <p className="font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
+            );
+          })}
+          <div className="fixed bottom-0 flex justify-between w-full px-4 py-3 mt-6 text-right border-t">
+            <div className="flex items-center gap-2">
+              <input type="checkbox" id="all" className="w-[18px] h-[18px] border-2 border-gray-400 rounded-sm" />
+              <label htmlFor="all" className="text-xs">All</label>
+            </div>
+            <div className="flex gap-2">
+              <div className="flex flex-col items-end justify-end">
+                <p className="text-xs">Total</p>
+                <h2 className="text-sm font-bold">${totalPrice.toFixed(2)}</h2>
               </div>
               <button
-                onClick={() => dispatch(removeFromCart({ id: item.id }))}
-                className="px-2 py-1 ml-4 text-red-500 hover:underline"
+                onClick={handleCheckout}
+                className="px-6 py-2 font-bold text-white rounded-lg bg-primary hover:bg-red-600"
               >
-                Remove
+                Checkout
               </button>
             </div>
-          ))}
-          <div className="mt-6 text-right">
-            <h2 className="text-xl font-semibold">Total: ${totalPrice.toFixed(2)}</h2>
-            <button
-              onClick={handleCheckout}
-              className="px-6 py-2 mt-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-            >
-              Checkout
-            </button>
+
           </div>
         </div>
       )}

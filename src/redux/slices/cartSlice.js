@@ -34,7 +34,7 @@ const cartSlice = createSlice({
       state.items = state.items.filter((item) => item.id !== action.payload.id);
     },
     clearCart: (state) => {
-      state.items = []; // Menghapus semua item dari keranjang
+      state.items = [];
     },
   },
 });

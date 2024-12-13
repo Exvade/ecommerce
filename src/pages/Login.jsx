@@ -48,7 +48,9 @@ export default function Login() {
           const users = response.data;
 
           if (users.length > 0) {
-            const user = users[0];
+            const randomIndex = Math.floor(Math.random() * users.length);
+            const user = users[randomIndex];
+
             setEmail(user.email);
             setPassword(user.password);
           }
@@ -62,6 +64,7 @@ export default function Login() {
       setEmail("");
       setPassword("");
     }
+
   }, [autoFill]);
 
   return (

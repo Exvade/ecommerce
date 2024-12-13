@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.png";
 import { logout } from "../redux/slices/authSlice";
 import IconCart from "./icon/IconCart";
@@ -8,6 +8,7 @@ import IconHome from "./icon/IconHome";
 export default function Navbar() {
   const location = useLocation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { isLoggedIn } = useSelector((state) => state.auth);
 
@@ -15,6 +16,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     dispatch(logout());
+    navigate("/login")
   };
 
   if (hideNavbar) {

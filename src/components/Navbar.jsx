@@ -23,7 +23,7 @@ export default function Navbar() {
     return null;
   }
   return (
-    <nav className="fixed top-0 w-full bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700">
+    <nav className="fixed top-0 z-50 w-full bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700">
       <div className="flex flex-wrap items-center justify-between max-w-screen-xl p-4 mx-auto">
         <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src={Logo} className="h-8" alt="ShopSphere Logo" />

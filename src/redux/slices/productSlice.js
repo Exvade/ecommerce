@@ -11,14 +11,13 @@ const productSlice = createSlice({
   name: "product",
   initialState,
   reducers: {
-    // Mengisi produk saat data diambil dari API
     setProducts: (state, action) => {
       const updatedProducts = action.payload.map((product) => ({
         ...product,
         stock:
           state.products.find((p) => p.id === product.id)?.stock ||
           product.stock ||
-          20, // Ambil stok dari localStorage jika ada
+          20,
       }));
       state.products = updatedProducts;
 

@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  isLoggedIn: false, // Default: pengguna belum login
-  user: null, // Informasi pengguna, default null
+  isLoggedIn: false,
+  user: null,
 };
 
 const authSlice = createSlice({

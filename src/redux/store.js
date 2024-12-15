@@ -2,7 +2,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "./slices/authSlice";
 import cartSlice from "./slices/cartSlice";
 import productSlice from "./slices/productSlice";
-// Hapus stockSlice jika tidak diperlukan
 
 const store = configureStore({
   reducer: {
@@ -10,8 +9,7 @@ const store = configureStore({
     cart: cartSlice,
     auth: authSlice,
   },
-  devTools: process.env.NODE_ENV !== "production", // Aktifkan DevTools hanya di development
-  // Tambahkan middleware tambahan jika diperlukan
+  devTools: process.env.NODE_ENV !== "production",
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(/* middleware tambahan di sini */),
 });

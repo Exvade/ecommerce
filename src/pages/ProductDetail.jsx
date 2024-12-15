@@ -83,7 +83,7 @@ export default function ProductDetail() {
 
   return (
     <>
-      <div className="flex items-center justify-between w-full h-20 max-w-screen-xl px-4 md:mx-auto">
+      <div className="sticky top-0 flex items-center justify-between w-full h-20 max-w-screen-xl px-4 bg-white md:mx-auto">
         <Link to="/">
           <IconBack />
         </Link>

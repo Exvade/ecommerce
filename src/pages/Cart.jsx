@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import IconMinus from "../components/icon/IconMinus";
 import IconPlus from "../components/icon/IconPlus";
+import IconTrash from "../components/icon/IconTrash";
 import { removeSelectedItems, updateCartQuantity } from "../redux/slices/cartSlice";
 import { updateStock } from "../redux/slices/productSlice";
 
@@ -14,6 +15,8 @@ export default function Cart() {
 
   const [selectedItems, setSelectedItems] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [isDeletePopup, setIsDeletePopup] = useState(false)
+  const [isCheckoutPopup, setIsCheckoutPopup] = useState(false)
 
   const handleQuantityChange = (id, quantity) => {
     if (quantity < 1) return;
@@ -39,10 +42,10 @@ export default function Cart() {
       }
     });
 
-    // Hapus barang yang dipilih dari keranjang
     dispatch(removeSelectedItems(selectedItems));
-    alert("Checkout berhasil! Stok produk telah diperbarui.");
-    setSelectedItems([]); // Reset pilihan setelah checkout
+    setIsCheckoutPopup(true);
+    setTimeout(() => setIsCheckoutPopup(false), 2000);
+    setSelectedItems([]);
   };
 
   const handleCheckboxChange = (id) => {
@@ -67,8 +70,15 @@ export default function Cart() {
     0
   );
 
+  const handleRemoveItem = (id) => {
+    setIsDeletePopup(true);
+    dispatch(removeSelectedItems([id]));
+    setTimeout(() => setIsDeletePopup(false), 2000);
+  };
+
+
   return (
-    <div className="w-full min-h-[100vh] bg-gray-200">
+    <div className="w-full min-h-[100vh] sm:bg-gray-200  bg-white">
       <div className="relative max-w-screen-xl pt-20 mx-auto z-1">
         <h1 className="hidden mb-6 text-2xl font-bold md:mb-0 md:block md:mt-3">Your Cart</h1>
         {cartItems.length === 0 ? (
@@ -112,40 +122,45 @@ export default function Cart() {
                           <p className="text-xs font-medium md:text-sm md:w-[80%] line-clamp-1 md:line-clamp-none">{item.title}</p>
                           <p className="text-xs font-bold md:text-base">${item.price.toFixed(2)}</p>
                         </div>
-                        <div className="flex items-center self-end border border-gray-200 rounded-lg p-[5px] h-8">
-                          <button
-                            onClick={() =>
-                              handleQuantityChange(item.id, Math.max(item.quantity - 1, 1))
-                            }
-                            className="w-4 text-base rounded text-primary hover:bg-blue-600 aspect-square"
-                          >
-                            <IconMinus />
+                        <div className="flex justify-between mt-4 md:justify-end md:gap-3 md:mt-[12px]">
+                          <button onClick={() => handleRemoveItem(item.id)}>
+                            <IconTrash />
                           </button>
-                          <input
-                            type="text"
-                            value={item.quantity}
-                            min="1"
-                            className="w-[40px] h-4 text-sm font-medium text-center border-none rounded focus:ring-0"
-                            onChange={(e) => {
-                              const newQuantity = parseInt(e.target.value, 10);
-                              if (newQuantity >= 1) {
-                                handleQuantityChange(item.id, newQuantity);
+                          <div className="flex items-center self-end border border-gray-200 rounded-lg p-[5px] h-8 md:rounded-full">
+                            <button
+                              onClick={() =>
+                                handleQuantityChange(item.id, Math.max(item.quantity - 1, 1))
                               }
-                            }}
-                            onBlur={() => {
-                              if (item.quantity > stock) {
-                                handleQuantityChange(item.id, stock);
+                              className="w-4 text-base rounded text-primary hover:bg-blue-600 aspect-square"
+                            >
+                              <IconMinus />
+                            </button>
+                            <input
+                              type="text"
+                              value={item.quantity}
+                              min="1"
+                              className="w-[40px] h-4 text-sm font-medium text-center border-none rounded focus:ring-0"
+                              onChange={(e) => {
+                                const newQuantity = parseInt(e.target.value, 10);
+                                if (newQuantity >= 1) {
+                                  handleQuantityChange(item.id, newQuantity);
+                                }
+                              }}
+                              onBlur={() => {
+                                if (item.quantity > stock) {
+                                  handleQuantityChange(item.id, stock);
+                                }
+                              }}
+                            />
+                            <button
+                              onClick={() =>
+                                handleQuantityChange(item.id, Math.min(item.quantity + 1, stock))
                               }
-                            }}
-                          />
-                          <button
-                            onClick={() =>
-                              handleQuantityChange(item.id, Math.min(item.quantity + 1, stock))
-                            }
-                            className="w-4 text-base rounded aspect-square text-primary hover:bg-blue-600"
-                          >
-                            <IconPlus />
-                          </button>
+                              className="w-4 text-base rounded aspect-square text-primary hover:bg-blue-600"
+                            >
+                              <IconPlus />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -185,8 +200,18 @@ export default function Cart() {
           </div>
         )}
         {showPopup && (
-          <div className="fixed left-0 right-0 flex items-center justify-center p-4 text-sm font-bold text-white bg-red-500 bottom-16 animate__animated animate__bounceInUp md:bottom-0">
+          <div className="fixed left-0 right-0 flex items-center justify-center p-4 text-sm font-bold text-white bg-primary bottom-16 animate__animated animate__bounceInUp md:bottom-0">
             Please select items before checking out!
+          </div>
+        )}
+        {isDeletePopup && (
+          <div className="fixed left-0 right-0 flex items-center justify-center p-4 text-sm font-bold text-white bg-primary bottom-16 animate__animated animate__bounceInUp md:bottom-0">
+            1 product has been removed
+          </div>
+        )}
+        {isCheckoutPopup && (
+          <div className="fixed left-0 right-0 flex items-center justify-center p-4 text-sm font-bold text-white bg-green-500 bottom-16 animate__animated animate__bounceInUp md:bottom-0">
+            Succesfully checkout product
           </div>
         )}
       </div>

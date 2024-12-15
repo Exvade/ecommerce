@@ -13,6 +13,7 @@ export default function ProductDetail() {
   const [error, setError] = useState(null);
   const [randomSold, setRandomSold] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [isShowPopUp, setIsShowPopUp] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -58,7 +59,9 @@ export default function ProductDetail() {
     } else {
       if (reduxProduct && reduxProduct.stock > 0) {
         dispatch(addToCart({ ...product, quantity }));
-        alert("Product added to cart!");
+        setIsShowPopUp(true)
+        setTimeout(() => setIsShowPopUp(false), 2000);
+        return;
       } else {
         alert("Sorry, this product is out of stock!");
       }
@@ -108,6 +111,17 @@ export default function ProductDetail() {
           </div>
           <div className="px-4 mt-4 border-y-8 md:border-none">
             <p className="my-4 text-base font-bold">Product Detail</p>
+            <div className="flex justify-between border-y py-[6px]">
+              <p className="w-[50%] text-sm">Category</p>
+              <p className="w-[50%] text-xs capitalize font-bold text-primary flex items-center">{product.category}</p>
+            </div>
+            <div className="flex justify-between border-b py-[6px]">
+              <p className="w-[50%] text-sm">Stock</p>
+              <p className="w-[50%] text-xs capitalize font-bold text-primary flex items-center">
+                {reduxProduct ? reduxProduct.stock : "Loading..."}
+              </p>
+            </div>
+            <p className="my-4 text-base font-bold">Product Description</p>
             <p className="mb-4 text-sm">{product.description}</p>
           </div>
           <div className="md:static fixed flex justify-center items-center bottom-0 py-[10px] bg-white w-full md:flex-col md:w-auto">
@@ -136,6 +150,11 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
+      {isShowPopUp && (
+        <div className="fixed left-0 right-0 flex items-center justify-center p-4 text-sm font-bold text-white bg-green-500 bottom-14 animate__animated animate__bounceInUp md:bottom-0">
+          Product Added to Cart
+        </div>
+      )}
     </>
   );
 }

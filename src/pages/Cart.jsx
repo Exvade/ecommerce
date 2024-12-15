@@ -68,7 +68,7 @@ export default function Cart() {
   );
 
   return (
-    <div className="w-full bg-gray-200">
+    <div className="w-full min-h-[100vh] bg-gray-200">
       <div className="relative max-w-screen-xl pt-20 mx-auto z-1">
         <h1 className="hidden mb-6 text-2xl font-bold md:mb-0 md:block md:mt-3">Your Cart</h1>
         {cartItems.length === 0 ? (
@@ -185,7 +185,7 @@ export default function Cart() {
           </div>
         )}
         {showPopup && (
-          <div className="fixed left-0 right-0 flex items-center justify-center p-4 text-sm font-bold text-white bg-red-500 bottom-16 animate__animated animate__bounceInUp">
+          <div className="fixed left-0 right-0 flex items-center justify-center p-4 text-sm font-bold text-white bg-red-500 bottom-16 animate__animated animate__bounceInUp md:bottom-0">
             Please select items before checking out!
           </div>
         )}

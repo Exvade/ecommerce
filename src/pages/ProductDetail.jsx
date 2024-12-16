@@ -14,6 +14,8 @@ export default function ProductDetail() {
   const [randomSold, setRandomSold] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isShowPopUp, setIsShowPopUp] = useState(false);
+  const [recommendations, setRecommendations] = useState([]);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(true);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -44,6 +46,32 @@ export default function ProductDetail() {
 
     setRandomSold(Math.floor(Math.random() * (99 - 10 + 1)) + 10);
   }, [id, reduxProduct]);
+
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      try {
+        const response = await axios.get('https://fakestoreapi.com/products');
+        let filtered = response.data
+          .filter(p => p.id !== parseInt(id))
+          .sort((a, b) => {
+            // Prioritize same category items
+            if (product && a.category === product.category && b.category !== product.category) return -1;
+            if (product && b.category === product.category && a.category !== product.category) return 1;
+            return 0;
+          })
+          .slice(0, 15);
+        setRecommendations(filtered);
+        setLoadingRecommendations(false);
+      } catch (error) {
+        console.error('Error fetching recommendations:', error);
+        setLoadingRecommendations(false);
+      }
+    };
+
+    if (product) {
+      fetchRecommendations();
+    }
+  }, [product, id]);
 
   if (loading) {
     return <div>Loading product details...</div>;
@@ -149,6 +177,48 @@ export default function ProductDetail() {
             </button>
           </div>
         </div>
+      </div>
+      <div className="max-w-screen-xl px-4 mx-auto mb-20">
+        <div className="mt-8 mb-4">
+          <h2 className="text-xl font-bold">Recommendations for you</h2>
+        </div>
+
+        {loadingRecommendations ? (
+          <div className="flex justify-center py-8">Loading recommendations...</div>
+        ) : (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {recommendations.map((item) => (
+              <Link
+                to={`/productdetail/${item.id}`}
+                key={item.id}
+                className="overflow-hidden transition-shadow bg-white border rounded-lg hover:shadow-lg"
+              >
+                <div className="p-4 aspect-square">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="object-contain w-full h-full"
+                  />
+                </div>
+                <div className="p-3">
+                  <h3 className="mb-1 text-sm font-medium line-clamp-2">{item.title}</h3>
+                  <p className="mb-2 text-lg font-bold">${item.price.toFixed(2)}</p>
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="flex items-center">
+                      <img
+                        src="https://assets.tokopedia.net/assets-tokopedia-lite/v2/phoenix/kratos/de64305b.svg"
+                        alt=""
+                        className="w-4 h-4"
+                      />
+                      <span className="ml-1">{item.rating.rate}</span>
+                    </div>
+                    <span className="text-gray-500">({item.rating.count})</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
       {isShowPopUp && (
         <div className="fixed left-0 right-0 flex items-center justify-center p-4 text-sm font-bold text-white bg-green-500 bottom-14 animate__animated animate__bounceInUp md:bottom-0">

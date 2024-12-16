@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Ambil data dari localStorage jika tersedia
 const localStorageProducts = JSON.parse(localStorage.getItem("products")) || [];
 
 const initialState = {
@@ -21,20 +20,17 @@ const productSlice = createSlice({
       }));
       state.products = updatedProducts;
 
-      // Simpan ke localStorage
       localStorage.setItem("products", JSON.stringify(updatedProducts));
     },
 
-    // Mengupdate stok produk
     updateStock: (state, action) => {
       const { id, quantity } = action.payload;
       const product = state.products.find((product) => product.id === id);
 
       if (product) {
-        product.stock -= quantity; // Kurangi stok
-        if (product.stock < 0) product.stock = 0; // Hindari stok negatif
+        product.stock -= quantity;
+        if (product.stock < 0) product.stock = 0;
 
-        // Simpan perubahan ke localStorage
         localStorage.setItem("products", JSON.stringify(state.products));
       }
     },

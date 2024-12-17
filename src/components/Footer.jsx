@@ -5,7 +5,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
   const location = useLocation();
 
-  const hideFooter = location.pathname.includes("/cart");
+  const hideFooter = location.pathname.includes("/cart") || location.pathname.includes("/login");
 
   if (hideFooter) return null;
 

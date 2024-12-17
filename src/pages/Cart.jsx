@@ -2,6 +2,7 @@ import "animate.css";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import ProductRecommendations from "../components/ProductRecommendations";
 import IconMinus from "../components/icon/IconMinus";
 import IconPlus from "../components/icon/IconPlus";
 import IconTrash from "../components/icon/IconTrash";
@@ -167,6 +168,12 @@ export default function Cart() {
                   </div>
                 );
               })}
+              {cartItems.length > 0 && (
+                <div className="px-4 mt-8 md:mt-12 md:px-0">
+                  <h2 className="mb-4 text-xl font-bold">Recommended for you</h2>
+                  <ProductRecommendations />
+                </div>
+              )}
             </div>
             <div className="md:w-[30%] fixed bottom-0 flex justify-between w-full px-4 py-3 text-right border-t md:flex-col bg-white md:rounded-lg md:justify-center md:p-[24px] md:self-start md:sticky md:top-[80px]">
               <div className="flex items-center gap-2 md:hidden ">

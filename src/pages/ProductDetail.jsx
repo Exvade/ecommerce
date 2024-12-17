@@ -54,7 +54,6 @@ export default function ProductDetail() {
         let filtered = response.data
           .filter(p => p.id !== parseInt(id))
           .sort((a, b) => {
-            // Prioritize same category items
             if (product && a.category === product.category && b.category !== product.category) return -1;
             if (product && b.category === product.category && a.category !== product.category) return 1;
             return 0;
@@ -119,7 +118,7 @@ export default function ProductDetail() {
         <IconShare />
       </div>
 
-      <div className="md:flex md:max-w-screen-lg md:mx-auto md:justify-center md:items-center md:mt-10">
+      <div className="md:flex md:max-w-screen-lg md:justify-between md:gap-20 md:mx-auto md:items-center md:mt-10">
         <div className="w-full aspect-square md:w-[50%]">
           <img src={product.image} alt="" className="object-contain w-full aspect-square" />
         </div>
@@ -152,7 +151,7 @@ export default function ProductDetail() {
             <p className="my-4 text-base font-bold">Product Description</p>
             <p className="mb-4 text-sm">{product.description}</p>
           </div>
-          <div className="md:static fixed flex justify-center items-center bottom-0 py-[10px] bg-white w-full md:flex-col md:w-auto">
+          <div className="md:static fixed flex justify-center items-center bottom-0 py-[10px] bg-white w-full md:flex-col md:w-auto md:px-4">
             <div className="justify-around hidden w-full py-4 md:flex md:items-center">
               <button
                 onClick={decrementQuantity}

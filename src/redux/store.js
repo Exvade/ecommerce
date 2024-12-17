@@ -10,8 +10,7 @@ const store = configureStore({
     auth: authSlice,
   },
   devTools: process.env.NODE_ENV !== "production",
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(/* middleware tambahan di sini */),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
 
 export default store;

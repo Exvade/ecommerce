@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import SkeletonCard from "../components/SkeletonCard";
 import IconBack from "../components/icon/IconBack";
 import IconShare from "../components/icon/IconShare";
 import { addToCart } from "../redux/slices/cartSlice";
@@ -183,7 +184,7 @@ export default function ProductDetail() {
         </div>
 
         {loadingRecommendations ? (
-          <div className="flex justify-center py-8">Loading recommendations...</div>
+          <SkeletonCard />
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {recommendations.map((item) => (

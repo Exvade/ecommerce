@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { addToCart } from '../redux/slices/cartSlice';
+import SkeletonCard from './SkeletonCard';
 
 const ProductRecommendations = () => {
   const [recommendations, setRecommendations] = useState([]);
@@ -30,7 +31,7 @@ const ProductRecommendations = () => {
   };
 
   if (loading) {
-    return <div className="py-4 text-center">Loading recommendations...</div>;
+    return <SkeletonCard />;
   }
 
   return (

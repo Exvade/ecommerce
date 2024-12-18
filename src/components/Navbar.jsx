@@ -38,22 +38,26 @@ export default function Navbar() {
         <div className="hidden w-full md:block md:w-auto" id="navbar-dropdown">
           <ul className="flex flex-col items-center p-4 mt-4 font-medium border border-gray-100 rounded-lg md:p-0 bg-gray-50 md:space-x-4 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
             <li>
-              <Link to="/" className="flex items-center justify-center gap-3 px-3 py-2 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+              <Link to="/" className="flex items-center justify-center gap-3 px-3 py-2 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent md:flex-col md:gap-0">
                 <IconHome />
-                <span className="md:hidden">Home</span>
+                <span className="font-semibold md:text-xs text-primary">Home</span>
               </Link>
             </li>
+
             {isLoggedIn && (
               <li>
                 <Link
                   to="/cart"
-                  className="flex px-3 py-2 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                  className="flex flex-col px-3 py-2 rounded md:gap-0 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                 >
                   <IconCart />
-                  <span className="md:hidden">Cart</span>
+                  <span className="font-semibold md:text-xs text-primary">Cart</span>
                 </Link>
               </li>
             )}
+            <li className="hidden md:block">
+              <span className="border border-gray-300"></span>
+            </li>
             <li>
               {isLoggedIn ? (
 

@@ -81,6 +81,7 @@ export default function Login() {
               type="email"
               id="email"
               value={email}
+              placeholder="deftvalian@gmail.com"
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               required
@@ -93,6 +94,7 @@ export default function Login() {
             <input
               type="password"
               id="password"
+              placeholder="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
